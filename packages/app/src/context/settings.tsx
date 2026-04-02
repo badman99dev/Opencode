@@ -18,6 +18,12 @@ export interface SoundSettings {
   errors: string
 }
 
+export interface CustomResponseSettings {
+  name: string
+  tone: string
+  customInstructions: string
+}
+
 export interface Settings {
   general: {
     autoSave: boolean
@@ -41,6 +47,7 @@ export interface Settings {
   }
   notifications: NotificationSettings
   sounds: SoundSettings
+  customResponse: CustomResponseSettings
 }
 
 export const monoDefault = "System Mono"
@@ -117,6 +124,11 @@ const defaultSettings: Settings = {
     permissions: "staplebops-02",
     errorsEnabled: true,
     errors: "nope-03",
+  },
+  customResponse: {
+    name: "",
+    tone: "neutral",
+    customInstructions: "",
   },
 }
 
@@ -260,6 +272,23 @@ export const { use: useSettings, provider: SettingsProvider } = createSimpleCont
         errors: withFallback(() => store.sounds?.errors, defaultSettings.sounds.errors),
         setErrors(value: string) {
           setStore("sounds", "errors", value)
+        },
+      },
+      customResponse: {
+        name: withFallback(() => store.customResponse?.name, defaultSettings.customResponse.name),
+        setName(value: string) {
+          setStore("customResponse", "name", value)
+        },
+        tone: withFallback(() => store.customResponse?.tone, defaultSettings.customResponse.tone),
+        setTone(value: string) {
+          setStore("customResponse", "tone", value)
+        },
+        customInstructions: withFallback(
+          () => store.customResponse?.customInstructions,
+          defaultSettings.customResponse.customInstructions,
+        ),
+        setCustomInstructions(value: string) {
+          setStore("customResponse", "customInstructions", value)
         },
       },
     }

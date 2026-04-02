@@ -528,6 +528,71 @@ export const SettingsGeneral: Component = () => {
 
         <SoundsSection />
 
+        <div class="flex flex-col gap-1">
+          <h3 class="text-14-medium text-text-strong pb-2">{language.t("settings.general.section.customResponse")}</h3>
+          <SettingsList>
+            <SettingsRow
+              title={language.t("settings.general.row.customResponse.name.title")}
+              description={language.t("settings.general.row.customResponse.name.description")}
+            >
+              <TextField
+                data-action="settings-custom-response-name"
+                value={settings.customResponse.name()}
+                onChange={(e) => settings.customResponse.setName(e.currentTarget.value)}
+                variant="secondary"
+                size="small"
+              />
+            </SettingsRow>
+
+            <SettingsRow
+              title={language.t("settings.general.row.customResponse.tone.title")}
+              description={language.t("settings.general.row.customResponse.tone.description")}
+            >
+              <Select
+                data-action="settings-custom-response-tone"
+                options={[
+                  { value: "neutral", label: language.t("settings.general.row.customResponse.tone.option.neutral") },
+                  { value: "friendly", label: language.t("settings.general.row.customResponse.tone.option.friendly") },
+                  { value: "professional", label: language.t("settings.general.row.customResponse.tone.option.professional") },
+                  { value: "casual", label: language.t("settings.general.row.customResponse.tone.option.casual") },
+                  { value: "encouraging", label: language.t("settings.general.row.customResponse.tone.option.encouraging") },
+                  { value: "concise", label: language.t("settings.general.row.customResponse.tone.option.concise") },
+                ]}
+                current={[
+                  { value: "neutral", label: language.t("settings.general.row.customResponse.tone.option.neutral") },
+                  { value: "friendly", label: language.t("settings.general.row.customResponse.tone.option.friendly") },
+                  { value: "professional", label: language.t("settings.general.row.customResponse.tone.option.professional") },
+                  { value: "casual", label: language.t("settings.general.row.customResponse.tone.option.casual") },
+                  { value: "encouraging", label: language.t("settings.general.row.customResponse.tone.option.encouraging") },
+                  { value: "concise", label: language.t("settings.general.row.customResponse.tone.option.concise") },
+                ].find((o) => o.value === settings.customResponse.tone())}
+                value={(o) => o.value}
+                label={(o) => o.label}
+                onSelect={(option) => option && settings.customResponse.setTone(option.value)}
+                variant="secondary"
+                size="small"
+                triggerVariant="settings"
+              />
+            </SettingsRow>
+
+            <SettingsRow
+              title={language.t("settings.general.row.customResponse.customInstructions.title")}
+              description={language.t("settings.general.row.customResponse.customInstructions.description")}
+            >
+              <div class="w-full sm:w-80">
+                <TextField
+                  data-action="settings-custom-response-instructions"
+                  value={settings.customResponse.customInstructions()}
+                  onChange={(e) => settings.customResponse.setCustomInstructions(e.currentTarget.value)}
+                  variant="secondary"
+                  multiline
+                  class="min-h-[80px]"
+                />
+              </div>
+            </SettingsRow>
+          </SettingsList>
+        </div>
+
         {/*<Show when={platform.platform === "desktop" && platform.os === "windows" && platform.getWslEnabled}>
           {(_) => {
             const [enabledResource, actions] = createResource(() => platform.getWslEnabled?.())

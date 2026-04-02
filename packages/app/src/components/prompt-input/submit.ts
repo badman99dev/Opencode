@@ -13,6 +13,7 @@ import { usePermission } from "@/context/permission"
 import { type ContextItem, type ImageAttachmentPart, type Prompt, usePrompt } from "@/context/prompt"
 import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
+import { useSettings } from "@/context/settings"
 import { Identifier } from "@/utils/id"
 import { Worktree as WorktreeState } from "@/utils/worktree"
 import { buildRequestParts } from "./build-request-parts"
@@ -54,6 +55,29 @@ export async function sendFollowupDraft(input: FollowupSendInput) {
   const text = draftText(input.draft.prompt)
   const images = draftImages(input.draft.prompt)
   const [, setStore] = input.globalSync.child(input.draft.sessionDirectory)
+
+  const settings = useSettings()
+  const customSettings = settings.customResponse
+
+  const systemParts: string[] = []
+  if (customSettings.name()) {
+    systemParts.push(`The user's name is: ${customSettings.name()}`)
+  }
+  if (customSettings.tone() && customSettings.tone() !== "neutral") {
+    const toneMap: Record<string, string> = {
+      friendly: "Be friendly, warm, and conversational",
+      professional: "Be professional, concise, and precise",
+      casual: "Be casual, relaxed, and informal",
+      encouraging: "Be encouraging, supportive, and positive",
+      concise: "Be brief and to the point",
+    }
+    systemParts.push(toneMap[customSettings.tone()] || "")
+  }
+  if (customSettings.customInstructions()) {
+    systemParts.push(customSettings.customInstructions())
+  }
+
+  const systemPrompt = systemParts.length > 0 ? systemParts.join(". ") + "." : undefined
 
   const setBusy = () => {
     if (!input.optimisticBusy) return
@@ -122,6 +146,7 @@ export async function sendFollowupDraft(input: FollowupSendInput) {
     agent: input.draft.agent,
     model: input.draft.model,
     variant: input.draft.variant,
+    system: systemPrompt,
   }
 
   const add = () =>
@@ -156,6 +181,7 @@ export async function sendFollowupDraft(input: FollowupSendInput) {
       messageID,
       parts: requestParts,
       variant: input.draft.variant,
+      system: systemPrompt,
     })
     return true
   } catch (err) {
