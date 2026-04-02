@@ -538,7 +538,7 @@ export const SettingsGeneral: Component = () => {
               <TextField
                 data-action="settings-custom-response-name"
                 value={settings.customResponse.name()}
-                onChange={(e) => settings.customResponse.setName(e.currentTarget.value)}
+                onChange={(value) => settings.customResponse.setName(value)}
                 variant="secondary"
                 size="small"
               />
@@ -583,13 +583,29 @@ export const SettingsGeneral: Component = () => {
                 <TextField
                   data-action="settings-custom-response-instructions"
                   value={settings.customResponse.customInstructions()}
-                  onChange={(e) => settings.customResponse.setCustomInstructions(e.currentTarget.value)}
+                  onChange={(value) => settings.customResponse.setCustomInstructions(value)}
                   variant="secondary"
                   multiline
                   class="min-h-[80px]"
                 />
               </div>
             </SettingsRow>
+
+            <div class="flex justify-end py-2">
+              <Button
+                variant="primary"
+                size="small"
+                onClick={() => {
+                  showToast({
+                    variant: "success",
+                    icon: "circle-check",
+                    title: language.t("settings.customResponse.saved"),
+                  })
+                }}
+              >
+                {language.t("settings.customResponse.save")}
+              </Button>
+            </div>
           </SettingsList>
         </div>
 

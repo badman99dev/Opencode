@@ -838,6 +838,8 @@ export const dict = {
   "settings.customResponse.tone.option.concise": "Concise",
   "settings.customResponse.customInstructions.title": "Custom instructions",
   "settings.customResponse.customInstructions.description": "Add specific instructions for how the AI should behave",
+  "settings.customResponse.save": "Save",
+  "settings.customResponse.saved": "Settings saved successfully",
 
   "settings.shortcuts.title": "Keyboard shortcuts",
   "settings.shortcuts.reset.button": "Reset to defaults",
