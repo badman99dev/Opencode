@@ -1439,6 +1439,11 @@ export default function Page() {
         globalSync,
         draft: item,
         optimisticBusy: item.sessionDirectory === sdk.directory,
+        customSettings: {
+          name: settings.customResponse.name(),
+          tone: settings.customResponse.tone(),
+          customInstructions: settings.customResponse.customInstructions(),
+        },
       }).catch((err) => {
         setFollowup("failed", input.sessionID, input.id)
         fail(err)

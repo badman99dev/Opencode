@@ -13,6 +13,7 @@ import { usePermission } from "@/context/permission"
 import { type ContextItem, type ImageAttachmentPart, type Prompt, usePrompt } from "@/context/prompt"
 import { useSDK } from "@/context/sdk"
 import { useSync } from "@/context/sync"
+import { useSettings } from "@/context/settings"
 import { Identifier } from "@/utils/id"
 import { Worktree as WorktreeState } from "@/utils/worktree"
 import { buildRequestParts } from "./build-request-parts"
@@ -44,6 +45,11 @@ type FollowupSendInput = {
   messageID?: string
   optimisticBusy?: boolean
   before?: () => Promise<boolean> | boolean
+  customSettings?: {
+    name: string
+    tone: string
+    customInstructions: string
+  }
 }
 
 const draftText = (prompt: Prompt) => prompt.map((part) => ("content" in part ? part.content : "")).join("")
@@ -54,6 +60,28 @@ export async function sendFollowupDraft(input: FollowupSendInput) {
   const text = draftText(input.draft.prompt)
   const images = draftImages(input.draft.prompt)
   const [, setStore] = input.globalSync.child(input.draft.sessionDirectory)
+
+  const customSettings = input.customSettings
+
+  const systemParts: string[] = []
+  if (customSettings?.name) {
+    systemParts.push(`The user's name is: ${customSettings.name}`)
+  }
+  if (customSettings?.tone && customSettings.tone !== "neutral") {
+    const toneMap: Record<string, string> = {
+      friendly: "Be friendly, warm, and conversational",
+      professional: "Be professional, concise, and precise",
+      casual: "Be casual, relaxed, and informal",
+      encouraging: "Be encouraging, supportive, and positive",
+      concise: "Be brief and to the point",
+    }
+    systemParts.push(toneMap[customSettings.tone] || "")
+  }
+  if (customSettings?.customInstructions) {
+    systemParts.push(customSettings.customInstructions)
+  }
+
+  const systemPrompt = systemParts.length > 0 ? systemParts.join(". ") + "." : undefined
 
   const setBusy = () => {
     if (!input.optimisticBusy) return
@@ -122,6 +150,7 @@ export async function sendFollowupDraft(input: FollowupSendInput) {
     agent: input.draft.agent,
     model: input.draft.model,
     variant: input.draft.variant,
+    system: systemPrompt,
   }
 
   const add = () =>
@@ -156,6 +185,7 @@ export async function sendFollowupDraft(input: FollowupSendInput) {
       messageID,
       parts: requestParts,
       variant: input.draft.variant,
+      system: systemPrompt,
     })
     return true
   } catch (err) {
@@ -207,6 +237,7 @@ export function createPromptSubmit(input: PromptSubmitInput) {
   const layout = useLayout()
   const language = useLanguage()
   const params = useParams()
+  const settings = useSettings()
 
   const errorMessage = (err: unknown) => {
     if (err && typeof err === "object" && "data" in err) {
@@ -557,6 +588,11 @@ export function createPromptSubmit(input: PromptSubmitInput) {
       messageID,
       optimisticBusy: sessionDirectory === projectDirectory,
       before: waitForWorktree,
+      customSettings: {
+        name: settings.customResponse.name(),
+        tone: settings.customResponse.tone(),
+        customInstructions: settings.customResponse.customInstructions(),
+      },
     }).catch((err) => {
       pending.delete(session.id)
       if (sessionDirectory === projectDirectory) {
