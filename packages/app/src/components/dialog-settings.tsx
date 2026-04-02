@@ -29,7 +29,7 @@ export const DialogSettings: Component = () => {
                       {language.t("settings.tab.general")}
                     </Tabs.Trigger>
                     <Tabs.Trigger value="customResponse">
-                      <Icon name="user" />
+                      <Icon name="personalize" />
                       {language.t("settings.tab.customResponse")}
                     </Tabs.Trigger>
                     <Tabs.Trigger value="shortcuts">
