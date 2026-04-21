@@ -162,4 +162,7 @@ Content-Length: 63
 1. ✅ **HTML Images** - Both `<img>` tags and markdown image syntax render correctly
 2. ✅ **HTML Styling (CSS)** - Inline styles, gradients, colors, and custom HTML elements work perfectly
 3. ✅ **HTML Video Player** - `<video>` tags with direct media links (`.mp4`, `.webm`) play directly
+4. ✅ **HTML/CSS** - Full Support (Tables, Gradients, Flexbox, Forms ,<a download> etc).
+5. ✅ **SVG ** - ⚠️ Blocked Directly. Must use <img src="data:image/svg+xml..."> workaround.
+
  </example>
