@@ -25,7 +25,7 @@ jobs:
 
       - name: Install specific Bun version
         run: |
-          curl -fsSL https://github.com/oven-sh/bun/releases/download/bun-v1.3.13/bun-linux-x64.zip  -o /tmp/bun.zip
+          curl -fsSL https://github.com/oven-sh/bun/releases/download/bun-v1.3.14/bun-linux-x64.zip  -o /tmp/bun.zip
           unzip /tmp/bun.zip -d /tmp
           mv /tmp/bun-linux-x64/bun /usr/local/bin/bun
           chmod +x /usr/local/bin/bun
