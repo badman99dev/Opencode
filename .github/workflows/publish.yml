@@ -61,7 +61,7 @@ jobs:
       - name: Create tarball
         run: |
           cd packages/cli/dist
-          tar -czf opencode-linux-x64.tar.gz opencode-linux-x64
+          tar -czf opencode-linux-x64.tar.gz cli-linux-x64
 
       - name: Upload to Release
         if: inputs.version != '' || github.event_name == 'workflow_dispatch'
